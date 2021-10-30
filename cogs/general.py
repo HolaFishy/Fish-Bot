@@ -95,7 +95,7 @@ class General(commands.Cog):
         roles = (", ").join(roles)
         embed.add_field(name=f"Roles: ", value=f"> {roles}", inline=False)
         # replying Message
-        embed.set_thumbnail(url=ctx.author.avatar.url)
+        embed.set_thumbnail(url=member.avatar.url)
         await ctx.reply(embed=embed, mention_author=False)
 
 def setup(client):
