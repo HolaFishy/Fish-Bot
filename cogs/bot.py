@@ -22,6 +22,16 @@ class Events(commands.Cog):
         if message.content.startswith("?mikeal myers"):
             if message.author.id == 448645983748882442:
                 await message.channel.send("MEEEKYELL MYERESE")
+
+    # Sends a message in the channel I have specified, saying when someone has added fishbot to their server
+    @commands.Cog.listener()
+    async def on_guild_join(self, guild):
+        channel = self.client.get_channel(903859304090710016)
+        embed = discord.Embed(title=f"{guild.name} has added Fish Bot to their server!", description=f"{guild.name}'s Description: ```\n{guild.description}\n```", 
+        color=0x225c9a)
+        embed.set_thumbnail(url=guild.icon.url)
+        embed.set_footer(text=f"Member Count: {guild.member_count}, Owner: {guild.owner}")
+        await channel.send(embed=embed)
     
     # WARNING THIS EVENT REMOVES FULL TRACEBACKS FROM YOUR CONSOLE, AND WILL ONLY SHOW DISCORD PROVIDED ERRORS
     @commands.Cog.listener()
