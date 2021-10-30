@@ -55,8 +55,12 @@ class General(commands.Cog):
         else:
             embed.add_field(name=f"Activity:", value=f"> `Can't get user's status.`", inline=False)
         # Activity
+        activites = []
+        for activity in member.activities:
+            activites.append(f"{activity.name}")
+        activites = (", ").join(activites)
         if member.activity != None:
-            embed.add_field(name=f"Activity:", value=f"> `{member.activity}`", inline=False)
+            embed.add_field(name=f"Activity:", value=f"> `{activites}`", inline=False)
         else: 
             embed.add_field(name=f"Activity:", value=f"> `Isn't playing anything.`", inline=False)
         # Created At
