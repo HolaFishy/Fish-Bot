@@ -13,7 +13,7 @@ class Help(commands.Cog):
         # Default embed
         MainEmbed = discord.Embed(title="❔ Help Menu!", description=f"Valid Prefixs: `{prefix[0]}`, `@Fish Bot#7968`, `<@797534062721368135>`\
         \nTo get more information on any command, run `{prefix[0]}help <catagory>`", color = 0x225c9a)
-        MainEmbed.add_field(name="⚔️ Moderation", value=f"> `ban <member>`\n> `unban <member>`\n> `muterole (creates a muted role)`\
+        MainEmbed.add_field(name="⚔️ Moderation", value=f"> `ban <member> (reason)`\n> `unban <member> (reason)`\n> `muterole (creates a muted role)`\
         \n> `mute <member> <reason>`\n> `unmute <member>`\n> `kick <member> <reason>`")
         MainEmbed.add_field(name="🖨️ Text", value=f"> `clap <sentence>`\n> `mock <sentence>`\n> `upsidedown <sentence>`\n> `sparkle <sentence>`\
         \n> `fancy <sentence>`")
