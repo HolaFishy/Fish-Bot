@@ -15,7 +15,6 @@ class General(commands.Cog):
             embed = discord.Embed(title="❌ You must enter a message to embed!", color=0xFF0000)
             await ctx.reply(embed=embed, mention_author=False)
             return
-        await ctx.message.delete()
         try:
             title, description = message.split("/")
         except:
@@ -23,7 +22,8 @@ class General(commands.Cog):
             description = ""
         embed = discord.Embed(title=f"{title}", description=f"{description}",color = ctx.author.color)
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar.url)
-        await ctx.reply(embed=embed, mention_author=False)
+        await ctx.message.delete()
+        await ctx.send(embed=embed, mention_author=False)
 
     # Gets the avatar of a member
     @commands.command(aliases=["av"])
@@ -35,6 +35,55 @@ class General(commands.Cog):
         color=member.color)
         embed.set_image(url=member.avatar.url)
         message = await ctx.reply(embed=embed, mention_author=False)
+
+    # Gives information on the guild
+    @commands.command(aliases=["guild", "serverinfo"])
+    async def guildinfo(self, ctx):
+        guild = ctx.guild
+        # Title
+        embed = discord.Embed(title=f"{guild.name} (ID: {guild.id})", color=0x225c9a)
+        # Description
+        embed.add_field(name="Guild Description:", value=f"> `{guild.description}`", inline=False)
+        # Region
+        embed.add_field(name="Guild Region:", value=f"> `{guild.region}`", inline=False)
+        # Created At
+        created_at = str(guild.created_at)
+        embed.add_field(name="Guild Creation Date:", value=f"> `{created_at[:10]}` at `{created_at[11:16]}`")
+        # Member Count
+        embed.add_field(name="Member Count:", value=f"> `{guild.member_count}`/`{guild.max_members}`", inline=False)
+        # Role Count
+        RoleCount = 0
+        for role in guild.roles:
+            RoleCount += 1
+        embed.add_field(name="Role Count:", value=f"> `{RoleCount}`", inline=False)
+        # Channel Count
+        ChannelCount = 0
+        CatagoryCount = 0
+        for channel in guild.channels:
+            ChannelCount += 1
+        for catagory in guild.categories:
+            CatagoryCount += 1
+        embed.add_field(name="Channel and Catagory Count:", value=f"> Catagories - `{CatagoryCount}`, Channels - `{ChannelCount}`", inline=False)
+        # Boost level
+        embed.add_field(name="Guild Level:", value=f"> `Level {guild.premium_tier}` with `{guild.premium_subscription_count} boosts`.", inline=False)
+        # Emojis
+        emojis = []
+        if len(guild.emojis) < 1:
+            emojis = "`No Emojis`"
+        else:
+            for emoji in guild.emojis:
+                if emoji.animated == True:
+                    emojis.append(f"<a:{emoji.name}:{emoji.id}>")
+                else:
+                    emojis.append(f"<:{emoji.name}:{emoji.id}>")
+            emojis = (", ").join(emojis)
+        embed.add_field(name=f"Emojis ({len(guild.emojis)}/{guild.emoji_limit}):", value=f"> {emojis}", inline=False)
+        # Thumbnail/Footer
+        embed.set_thumbnail(url=guild.icon.url)
+        embed.set_footer(text=f"This guild is owned by: {guild.owner} (ID: {guild.owner.id})", icon_url=guild.owner.avatar.url)
+        # Sending
+        await ctx.message.reply(embed=embed, mention_author=False)
+
 
     # Gives information on a user
     @commands.command(aliases=["user"])
