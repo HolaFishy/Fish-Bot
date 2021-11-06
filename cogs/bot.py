@@ -1,7 +1,10 @@
 import discord
 from discord.ext import commands
-from main import Developers, prefix
+from main import prefix, Developers
 import os
+import asyncio
+from datetime import datetime
+from discord.ext.commands import *
 
 class Events(commands.Cog):
     def __init__(self, client):
@@ -10,6 +13,12 @@ class Events(commands.Cog):
     # Simple on ready command, prints when the bot goes online.
     @commands.Cog.listener()
     async def on_ready(self):
+        channel = self.client.get_channel(904918322318045224)
+        image = self.client.get_user(797534062721368135)
+        time = str(datetime.now())
+        embed = discord.Embed(title=f"Fishbot has gone online!", color=discord.Color.green())
+        embed.set_footer(text=f"{time[:16]}", icon_url=image.avatar.url)
+        await channel.send(embed=embed)
         print(f"Bot is now online!")
 
     # Tells the user the bots prefix when the ping it.
@@ -23,6 +32,7 @@ class Events(commands.Cog):
             if message.author.id == 448645983748882442:
                 await message.channel.send("MEEEKYELL MYERESE")
 
+    # SUPPORT SERVER STUFF
     # Sends a message in the channel I have specified, saying when someone has added fishbot to their server
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
@@ -30,20 +40,58 @@ class Events(commands.Cog):
         embed = discord.Embed(title=f"{guild.name} has added Fish Bot to their server!", description=f"{guild.name}'s Description: ```\n{guild.description}\n```", 
         color=0x225c9a)
         embed.set_thumbnail(url=guild.icon.url)
-        embed.set_footer(text=f"Member Count: {guild.member_count}, Owner: {guild.owner}")
+        invite = await guild.text_channels[0].create_invite(reason="Creating an invite for support server (discord.gg/G8XEhAkpnj)!")
+        embed.set_footer(text=f"Member Count: {guild.member_count}, Owner: {guild.owner}\nServer Invite Link: {invite}")
         await channel.send(embed=embed)
+
+    @commands.Cog.listener()
+    async def on_member_join(self, member):
+        guild = member.guild
+        MemberRole = discord.utils.get(member.guild.roles, name="Member")
+        if guild.id == 900257936713076736:
+            await member.add_roles(MemberRole, reason=f"Giving {member} the member role.")
+            channel = self.client.get_channel(900257936713076739)
+            message = await channel.send(member.mention)
+            await message.delete()
+            dev = self.client.get_user(448645983748882442)
+            embed = discord.Embed(title=f"Welcome {member.name}!", color=0x225c9a)
+            embed.add_field(name=f"If you need any help you can give **{dev.name}** a ping with your question :D", inline = False)
+            await channel.send(embed=embed)
+    # SUPPORT SERVER STUFF ^
     
     # WARNING THIS EVENT REMOVES FULL TRACEBACKS FROM YOUR CONSOLE, AND WILL ONLY SHOW DISCORD PROVIDED ERRORS
+    '''
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
-        await ctx.message.add_reaction("❌")
         channel = self.client.get_channel(903065937312366653)
         await channel.send(f"```\n{error}\n```")
         print(error)
-
+        embed=discord.Embed(title=f"❌ Error!", description=f"`{error}`", color=0xFF0000)
+        try:
+            message = await ctx.reply(embed=embed, mention_author=False)
+        except:
+            try:
+                message = await ctx.send(embed=embed, mention_author=False)
+            except:
+                message = await ctx.author.send(embed=embed, mention_author=False)
+        await message.add_reaction("🗑️")
+        def check(reaction, user):
+            return user != self.client.user and str(reaction) == "🗑️"
+        try:
+            reaction, user = await self.client.wait_for('reaction_add', timeout=120.0, check=check)
+        except asyncio.TimeoutError:
+            await message.delete()
+        if str(reaction) == "🗑️":
+            await message.delete()
+    '''
+            
 class Commands(commands.Cog):
     def __init__(self, client):
         self.client = client
+
+    @commands.command()
+    async def test(self, ctx):
+        print(datetime.time)
 
     @commands.command(aliases=["ping","info","files"])
     async def stats(self, ctx):
@@ -68,7 +116,6 @@ class Commands(commands.Cog):
         embed.add_field(name=f"Bot's Users:", value=f"<:members:900233507765354557> {userCount}", inline = False)
         embed.add_field(name=f"Discord.py Version:", value=f"<:discordpy:900242452030578738>  {discord.__version__}", inline = False)
         embed.add_field(name=f"File Amount: ", value=f"<:files:900235800158011392> {cogsAmt}", inline = False)
-        print(Developers)
         # Checks if the user is a dev, and if they are provides the guild names in the embed.
         if ctx.author.id in Developers:
             embed.add_field(name=f"Guilds:", value=f"> {guilds}", inline = False)
@@ -87,11 +134,11 @@ class Commands(commands.Cog):
             return
         await ctx.message.add_reaction("✅")
         embed=discord.Embed(title=f"Suggestion sent!", description=f"Your suggestion was sent! `{suggestion}`", color=0x225c9a)
-        embed.set_footer(text="People may vote on your suggestion in my support server! .support")
+        embed.set_footer(text=f"People may vote on your suggestion in my support server! {prefix[0]}support")
         await ctx.reply(embed=embed, mention_author=False)
         devembed = discord.Embed(title=f"{ctx.author} made a suggestion!", description=f"```{suggestion}```", color=0x225c9a)
         devembed.set_thumbnail(url=ctx.author.avatar.url)
-        message = await SuggestionChannel.reply(embed=devembed, mention_author=False)
+        message = await SuggestionChannel.send(embed=devembed, mention_author=False)
         await message.add_reaction("⬆️")
         await message.add_reaction("⬇️")
 
