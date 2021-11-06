@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from main import Developers, prefix
+from main import prefix
 
 class Text(commands.Cog):
     def __init__(self, client):
@@ -61,7 +61,6 @@ class Text(commands.Cog):
                 NewMessage.append(letters[letter])
             else:
                 NewMessage.append(letter)
-        print(NewMessage)
         await ctx.reply(("").join(reversed(NewMessage)), mention_author=False)
 
     # Mock command, makes every other letter in a sentence uppercase. You may also reply to a message to mock the message
