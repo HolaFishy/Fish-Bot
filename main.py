@@ -10,7 +10,7 @@ Developers = {
 
 # The bots settings
 prefix = [">", "@Fish Bot#7968 ", "<@797534062721368135> ", "<@!797534062721368135> ","@Fish Bot#7968", "<@797534062721368135>", "<@!797534062721368135>"]
-game = discord.Game("with other bots")
+game = discord.Game("with other bots!")
 client = commands.Bot(
     intents= discord.Intents.all(),
     command_prefix = prefix,
@@ -43,7 +43,8 @@ async def load(ctx, extension=None):
             await asyncio.sleep(5)
             await ctx.message.delete()
     else:
-        await ctx.reply("You must be a developer to use this command!", delete_after=5, mention_author=False)
+        embed = discord.Embed(title=f"❌ You must be a developer to use this command!", color=0x225c9a)
+        await ctx.reply(embed=embed, delete_after=15, mention_author=False)
 
 # Unloads the cog
 @client.command()
@@ -70,7 +71,8 @@ async def unload(ctx, extension=None):
             await asyncio.sleep(5)
             await ctx.message.delete()
     else:
-        await ctx.reply("You must be a developer to use this command!", delete_after=5, mention_author=False)
+        embed = discord.Embed(title=f"❌ You must be a developer to use this command!", color=0x225c9a)
+        await ctx.reply(embed=embed, delete_after=15, mention_author=False)
 
 # Unloads the cog, then reloads it.
 @client.command()
@@ -104,7 +106,8 @@ async def reload(ctx, extension=None):
             await asyncio.sleep(5)
             await ctx.message.delete()
     else:
-        await ctx.reply("You must be a developer to use this command!", delete_after=5, mention_author=False)
+        embed = discord.Embed(title=f"❌ You must be a developer to use this command!", color=0x225c9a)
+        await ctx.reply(embed=embed, delete_after=15, mention_author=False)
 
 # Loads all the cogs when the bot is run
 for filename in os.listdir("./cogs"):
