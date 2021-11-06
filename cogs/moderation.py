@@ -216,6 +216,45 @@ class Moderation(commands.Cog):
         embed=discord.Embed(title=f"Bulk Deleted **{amount}** messages!", color=0x225c9a)
         await ctx.reply(embed=embed, delete_after=10, mention_author=False)
         
+    @commands.command(aliases=["save","channellog","channelsave"])
+    @commands.cooldown(1, 60, commands.BucketType.user)
+    @commands.has_permissions(manage_messages=True)
+    async def log(self, ctx, amount=50):
+        if amount > 200:
+            ctx.command.reset_cooldown(ctx)
+            embed=discord.Embed(title="❌ You cannot log more than 200 messages!", color=0xFF0000)
+            embed.set_footer(text="*This is because save messages takes up a lot of the bots resources, so can't be used often")
+            await ctx.reply(embed=embed, mention_author=False)
+        elif amount < 10:
+            ctx.command.reset_cooldown(ctx)
+            embed=discord.Embed(title="❌ You cannot log less than 10 messages!", color=0xFF0000)
+            embed.set_footer(text="*This is because save messages takes up a lot of the bots resources, so can't be used often")
+            await ctx.reply(embed=embed, mention_author=False)
+        else:
+            file = open("log.txt","w")
+            file.write("")
+            file.close()
+            file = open("log.txt","a")
+            messages = await ctx.channel.history(limit=amount).flatten()
+            messages.reverse()
+            for message in messages:
+                if len(message.embeds) > 0:
+                    embeds = str(len(message.embeds))
+                    file.write(f"{message.author} (Has Embed): {message.content}\n")
+                else:
+                    file.write(f"{message.author}: {message.content}\n")
+            file.close()
+            with open("log.txt", "rb") as file:
+                await ctx.author.send("Here is your file (It reads top to bottom, top being the oldest):", file=discord.File(file, "log.txt"))
+        await ctx.message.add_reaction("✅")
+            
+    @log.error
+    async def log_error(self, ctx, error):
+        if isinstance(error, commands.CommandOnCooldown):
+            embed = discord.Embed(title=f"Command is on cooldown!",description=f"Try again in {error.retry_after:.2f}s.", color=0x225c9a)
+            await ctx.reply(embed=embed, mention_author=False)
+        else:
+            print(error)
 
 def setup(client):
     client.add_cog(Moderation(client))
