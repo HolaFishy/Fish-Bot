@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from main import prefix
+from main import prefix, Developers
 
 class Help(commands.Cog):
     def __init__(self, client):
@@ -13,12 +13,14 @@ class Help(commands.Cog):
         # Default embed
         MainEmbed = discord.Embed(title="❔ Help Menu!", description=f"Valid Prefixs: `{prefix[0]}`, `@Fish Bot#7968`, `<@797534062721368135>`\
         \nTo get more information on any command, run `{prefix[0]}help <catagory>`", color = 0x225c9a)
-        MainEmbed.add_field(name="⚔️ Moderation", value=f"> `ban <member> (reason)`\n> `unban <member> (reason)`\n> `muterole (creates a muted role)`\
+        MainEmbed.add_field(name="⚔️ Moderation", value=f"> `ban <member> (reason)`\n> `unban <member> (reason)`\n> `bans`\n> `muterole`\
         \n> `mute <member> <reason>`\n> `unmute <member>`\n> `kick <member> <reason>`")
         MainEmbed.add_field(name="🖨️ Text", value=f"> `clap <sentence>`\n> `mock <sentence>`\n> `upsidedown <sentence>`\n> `sparkle <sentence>`\
         \n> `fancy <sentence>`")
         MainEmbed.add_field(name="🤖 Bot Info", value=f"> `stats`\n> `support`\n> `suggest (suggestions for the bot)`")
-        MainEmbed.add_field(name="📚 General Commands", value=f"> `userinfo <member>`\n> `avatar <member>`\n> `embed <title> / <description>`")
+        MainEmbed.add_field(name="📚 General Commands", value=f"> `userinfo <member>`\n> `serverinfo`\n> `avatar <member>`\n> `embed <title> / <description>`")
+        if ctx.author.id in Developers:
+            MainEmbed.add_field(name="🔧 Developer Commands", value=f"> `servers`\n> `join <server>`")
         MainEmbed.set_footer(text=f"This bot was coded in Python!\nand was developed by {dev} ❤️",
         icon_url="https://cdn.discordapp.com/emojis/898009300646105089.png?size=128")
         MainEmbed.set_author(name=f"Get more information on any command, run '{prefix[0]}help <catagory>'")
@@ -31,6 +33,7 @@ class Help(commands.Cog):
                 embed = discord.Embed(title="⚔️ Moderation", color = 0x225c9a)
                 embed.add_field(name=f"`ban <member> (reason)`", value="> *Bans a member, and logs the reason in the audit logs if provided.*")
                 embed.add_field(name=f"`unban <member>`", value="> *Unbans a user, you must enter the user in this format: `Username#Numbers`*")
+                embed.add_field(name=f"`bans`", value="> *Gives a list of banned user in your current server*")
                 embed.add_field(name=f"`mute <member> (reason)`", value=f"> *Mutes a member, if you do not have a mute role create one using `{prefix[0]}muterole`*")
                 embed.add_field(name=f"`muterole`", value=f"> *Creates a mute role, the role must remain named `Muted` or it will not work!*")
                 embed.add_field(name=f"`kick <member> (reason)`", value=f"> *Kicks a member, and logs the reason in audit logs if provided.*")
@@ -59,9 +62,17 @@ class Help(commands.Cog):
                 embed = discord.Embed(title=f"📚 General Commands", color = 0x225c9a)
                 embed.add_field(name=f"`embed <title> / (description)`", value=f"> *Sends an embed based on the args provided. You may add a description by adding a / to seperate the two fields*")
                 embed.add_field(name=f"`userinfo (member)`", value=f"> *Sends all info on the user provided, or the author if no user is provided*")
+                embed.add_field(name=f"`serverinfo`", value=f"> *Sends all info on the current guild you're in*")
                 embed.add_field(name=f"`avatar (member)`", value=f"> *Sends the avatar of the user provided, or the author if no user is provided*")
                 embed.set_footer(text="the items in '<>'s are required, the items in '()'s are optional.")
                 await ctx.reply(embed=embed, mention_author=False)
+            elif catagory.startswith("dev"):
+                if ctx.author.id in Developers:
+                    embed = discord.Embed(title=f"🔧 Developer Commands", color = 0x225c9a)
+                    embed.add_field(name=f"`servers`", value=f"> *Lists all the servers that the bot is in*")
+                    embed.add_field(name=f"`join <server ID>`", value=f"> *Sends an invite to a server that the bot is in to the author*")
+                    embed.set_footer(text="the items in '<>'s are required, the items in '()'s are optional.")
+                    await ctx.reply(embed=embed, mention_author=False)
             else:
                 # If no valid catagory is provided, sends the default embed
                 await ctx.reply(embed=MainEmbed, mention_author=False)
