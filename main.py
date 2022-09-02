@@ -9,13 +9,15 @@ Developers = {
 }
 
 # The bots settings
-prefix = [">", "@Fish Bot#7968 ", "<@797534062721368135> ", "<@!797534062721368135> ","@Fish Bot#7968", "<@797534062721368135>", "<@!797534062721368135>"]
-game = discord.Game("with other bots!")
+prefix = ["+", "@Fish Bot#7968 ", "<@797534062721368135> ", "<@!797534062721368135> ","@Fish Bot#7968", "<@797534062721368135>", "<@!797534062721368135>"]
+game = discord.Game("with other bots!!")
+cogsPath = os.path.dirname(__file__)+'/cogs'
 client = commands.Bot(
     intents= discord.Intents.all(),
     command_prefix = prefix,
     help_command = None,
-    status=discord.Status.online, activity=game
+    status=discord.Status.online, activity=game,
+    case_insensitive=True
     )
 
 # Loads the cog
@@ -25,7 +27,7 @@ async def load(ctx, extension=None):
         extension = extension.lower()
     if ctx.author.id in Developers:
         if extension == "all" or extension == "*" or extension == None:
-            for file in os.listdir("./cogs"):
+            for file in os.listdir(cogsPath):
                 if file.endswith(".py"):
                     try:
                         client.unload_extension(f"cogs.{file[:-3]}")
@@ -53,7 +55,7 @@ async def unload(ctx, extension=None):
         extension = extension.lower()
     if ctx.author.id in Developers:
         if extension == "all" or extension == "*" or extension == None:
-            for file in os.listdir("./cogs"):
+            for file in os.listdir(cogsPath):
                 if file.endswith(".py"):
                     try:
                         client.unload_extension(f"cogs.{file[:-3]}")
@@ -81,7 +83,7 @@ async def reload(ctx, extension=None):
         extension = extension.lower()
     if ctx.author.id in Developers:
         if extension == "all" or extension == "*" or extension == None:
-            for file in os.listdir("./cogs"):
+            for file in os.listdir(cogsPath):
                 if file.endswith(".py"):
                     try:
                         client.unload_extension(f"cogs.{file[:-3]}")
@@ -110,7 +112,7 @@ async def reload(ctx, extension=None):
         await ctx.reply(embed=embed, delete_after=15, mention_author=False)
 
 # Loads all the cogs when the bot is run
-for filename in os.listdir("./cogs"):
+for filename in os.listdir(cogsPath):
     if filename.endswith(".py"):
         client.load_extension(f"cogs.{filename[:-3]}")
 
