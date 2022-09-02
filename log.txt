@@ -1,10 +1,1 @@
-Fish Bot#7968 (Has Embed): 
-Hola_Fishy#4591: >help bot
-Fish Bot#7968 (Has Embed): 
-Hola_Fishy#4591: >help gen
-Fish Bot#7968 (Has Embed): 
-Hola_Fishy#4591: >help dev
-Fish Bot#7968 (Has Embed): 
-Hola_Fishy#4591: >log 10
-Hola_Fishy#4591: >log 10
-Hola_Fishy#4591: >log 10
+Placeholder file for the >log command
